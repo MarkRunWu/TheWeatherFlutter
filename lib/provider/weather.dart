@@ -36,24 +36,38 @@ Future<List<CityForcast>> forcastsNext36Hours(
         (v) => v.name == location.locationName,
       ),
       records:
-          propertiesByDate.values.map((property) {
-            return ForcastRecord(
-              start: DateTime.parse(property["CI"]!.startTime),
-              end: DateTime.parse(property["CI"]!.endTime),
-              minTemperature: Temperature(
-                value: property["MinT"]!.parameter.parameterName,
-                unit: property["MinT"]!.parameter.parameterUnit ?? "C",
-              ),
-              maxTemperature: Temperature(
-                value: property["MaxT"]!.parameter.parameterName,
-                unit: property["MaxT"]!.parameter.parameterUnit ?? "C",
-              ),
-              rainChance:
-                  int.parse(property["PoP"]!.parameter.parameterName) / 100.0,
-              weatherTerm: property["Wx"]!.parameter.parameterName,
-              confortableTerm: property["CI"]!.parameter.parameterName,
-            );
-          }).toList(),
+          propertiesByDate.values
+              .map((property) {
+                var start = DateTime.parse(property["CI"]!.startTime);
+                final end = DateTime.parse(property["CI"]!.endTime);
+                final hourlyRecords = List<ForcastRecord>.empty(growable: true);
+
+                while (start.isBefore(end)) {
+                  hourlyRecords.add(
+                    ForcastRecord(
+                      start: start,
+                      end: start = start.add(Duration(hours: 1)),
+                      minTemperature: Temperature(
+                        value: property["MinT"]!.parameter.parameterName,
+                        unit: property["MinT"]!.parameter.parameterUnit ?? "C",
+                      ),
+                      maxTemperature: Temperature(
+                        value: property["MaxT"]!.parameter.parameterName,
+                        unit: property["MaxT"]!.parameter.parameterUnit ?? "C",
+                      ),
+                      rainChance:
+                          int.parse(property["PoP"]!.parameter.parameterName) /
+                          100.0,
+                      weatherTerm: property["Wx"]!.parameter.parameterName,
+                      confortableTerm: property["CI"]!.parameter.parameterName,
+                    ),
+                  );
+                }
+
+                return hourlyRecords;
+              })
+              .expand((e) => e)
+              .toList(),
     );
   }).toList();
 }
