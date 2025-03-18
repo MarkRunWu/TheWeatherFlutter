@@ -24,10 +24,16 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             switch (state) {
-              HomeReadyState(:final forcast) => Expanded(
+              HomeReadyState(:final forcasts) => Expanded(
                 child:
-                    forcast != null
-                        ? ListView(children: [WeatherForcastsCard(forcast)])
+                    forcasts.isNotEmpty
+                        ? ListView.separated(
+                          itemCount: forcasts.length,
+                          itemBuilder:
+                              (ctx, i) => WeatherForcastsCard(forcasts[i]),
+                          separatorBuilder:
+                              (_, i) => const SizedBox(height: 16),
+                        )
                         : Center(
                           child: Text(
                             state.query.isNotEmpty

@@ -11,9 +11,9 @@ sealed class HomeState {}
 
 class HomeReadyState extends HomeState {
   String query;
-  CityForcast? forcast;
+  List<CityForcast> forcasts;
 
-  HomeReadyState(this.query, this.forcast);
+  HomeReadyState(this.query, this.forcasts);
 }
 
 class HomeLoadingState extends HomeState {}
@@ -28,15 +28,18 @@ final searchTextProvider = StateProvider<String>((Ref ref) {
 });
 
 @riverpod
+List<TaiwanCity> searchCities(Ref ref, String q) {
+  q = q.replaceAll("台", "臺");
+  return TaiwanCity.values
+      .where((city) => q.isNotEmpty && city.name.startsWith(q))
+      .toList();
+}
+
+@riverpod
 HomeState homeState(Ref ref) {
   final q = ref.watch(searchTextProvider);
-  final r = ref.watch(
-    forcastsNext36HoursProvider(
-      TaiwanCity.values
-          .where((city) => q.isNotEmpty && city.name.startsWith(q))
-          .firstOrNull,
-    ),
-  );
+  final cities = ref.watch(searchCitiesProvider(q));
+  final r = ref.watch(forcastsNext36HoursProvider(cities));
   return r.map(
     data: (d) => HomeReadyState(q, d.value),
     error: (e) => HomeErrorState(e.error as AppError),
@@ -46,9 +49,6 @@ HomeState homeState(Ref ref) {
 
 class HomeStateHandler {
   static void searchByText(WidgetRef ref, String text) {
-    ref.read(searchTextProvider.notifier).state = text.trim().replaceAll(
-      "台",
-      "臺",
-    );
+    ref.read(searchTextProvider.notifier).state = text.trim();
   }
 }

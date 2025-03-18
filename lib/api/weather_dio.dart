@@ -56,11 +56,14 @@ class WeatherDio implements WeatherAPI {
   }
 
   @override
-  Future<ForcastsResponse> getForcasts36Hours(TaiwanCity city) {
+  Future<ForcastsResponse> getForcasts36Hours(List<TaiwanCity> cities) {
     return _requestJsonObj(
       () => _dio.get(
         '/datastore/F-C0032-001',
-        queryParameters: {"locationName": city.name, "sort": "time"},
+        queryParameters: {
+          "locationName": cities.map((city) => city.name).join(","),
+          "sort": "time",
+        },
       ),
       ForcastsResponse.fromJson,
     );
