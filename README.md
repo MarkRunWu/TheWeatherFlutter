@@ -4,13 +4,27 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Setup project with Makefile:
 
-A few resources to get you started if this is your first Flutter project:
+```
+make setup
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+or manually run following commands:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+cp .env.example .env
+dart run build_runner build
+```
+
+Update your weather api key in `.env`
+
+```
+WEATHER_API_KEY=<YOUR_API_KEY>
+```
+
+
+Running app in emulator:
+```
+flutter run
+```

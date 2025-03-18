@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:the_weather_flutter/injectable.dart';
 
-void main() {
+void main() async {
+  await configureDependencies();
   runApp(const MyApp());
 }
 
