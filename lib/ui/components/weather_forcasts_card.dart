@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:the_weather_flutter/ext/localized.dart';
 import 'package:the_weather_flutter/provider/models/forcast.dart';
+import 'package:the_weather_flutter/provider/utils/localized.dart';
 
 class WeatherForcastsCard extends StatelessWidget {
   final CityForcast forcast;
