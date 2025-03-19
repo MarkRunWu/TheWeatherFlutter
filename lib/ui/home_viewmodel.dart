@@ -36,19 +36,20 @@ List<TaiwanCity> searchCities(Ref ref, String q) {
 }
 
 @riverpod
-HomeState homeState(Ref ref) {
-  final q = ref.watch(searchTextProvider);
-  final cities = ref.watch(searchCitiesProvider(q));
-  final r = ref.watch(forcastsNext36HoursProvider(cities));
-  return r.map(
-    data: (d) => HomeReadyState(q, d.value),
-    error: (e) => HomeErrorState(e.error as AppError),
-    loading: (l) => HomeLoadingState(),
-  );
-}
-
-class HomeStateHandler {
-  static void searchByText(WidgetRef ref, String text) {
+class HomeViewModel extends _$HomeViewModel {
+  void searchByText(String text) {
     ref.read(searchTextProvider.notifier).state = text.trim();
+  }
+
+  @override
+  HomeState build() {
+    final q = ref.watch(searchTextProvider);
+    final cities = ref.watch(searchCitiesProvider(q));
+    final r = ref.watch(forcastsNext36HoursProvider(cities));
+    return r.map(
+      data: (d) => HomeReadyState(q, d.value),
+      error: (e) => HomeErrorState(e.error as AppError),
+      loading: (l) => HomeLoadingState(),
+    );
   }
 }

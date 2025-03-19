@@ -8,7 +8,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homeStateProvider);
+    final state = ref.watch(homeViewModelProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -19,7 +19,11 @@ class HomeScreen extends ConsumerWidget {
               child: SearchBar(
                 autoFocus: true,
                 onSubmitted:
-                    (text) => {HomeStateHandler.searchByText(ref, text)},
+                    (text) => {
+                      ref
+                          .read(homeViewModelProvider.notifier)
+                          .searchByText(text),
+                    },
                 hintText: "輸入城市查詢天氣, (ex: 台北市, 新北市, 桃園市, ...",
               ),
             ),
