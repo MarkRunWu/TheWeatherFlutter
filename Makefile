@@ -7,4 +7,4 @@ test:
 
 setup:
 	cp .env.example .env
-	codegen
+	@make codegen
