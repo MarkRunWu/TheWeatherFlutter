@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:injectable/injectable.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:the_weather_flutter/api/models/city.dart';
 import 'package:the_weather_flutter/api/models/forcasts.dart';
@@ -17,7 +18,10 @@ Future<List<CityForcast>> forcastsNext36Hours(
     return List.empty();
   }
   WeatherAPI api = getIt();
-  final r = await api.getForcasts36Hours(cities);
+  final op = api.getForcasts36Hours(cities);
+
+  ref.onDispose(op.cancel);
+  final r = await op.future();
   return r.records.locations.map((location) {
     final Map<String, Map<String, TimeRange>> propertiesByDate = {};
     for (final element in location.weatherElements) {
@@ -40,7 +44,6 @@ Future<List<CityForcast>> forcastsNext36Hours(
                 var start = DateTime.parse(property["CI"]!.startTime);
                 final end = DateTime.parse(property["CI"]!.endTime);
                 final hourlyRecords = List<ForcastRecord>.empty(growable: true);
-
                 while (start.isBefore(end)) {
                   final nextStart = start.add(Duration(hours: 1));
                   if (nextStart.isAfter(now)) {

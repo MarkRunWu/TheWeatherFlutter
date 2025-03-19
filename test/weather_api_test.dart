@@ -13,18 +13,19 @@ void main() async {
     skip: "Comment out this line to try real api",
     () async {
       final client = getIt<WeatherAPI>();
-      final r = await client.getForcasts36Hours(TaiwanCity.taipei);
+      final op = client.getForcasts36Hours([TaiwanCity.taipei]);
+      final r = await op.future();
       expect(r.success, equals("true"));
     },
   );
 
   test("forcast data provider", () async {
     final container = createContainer();
-    expectLater(
-      container
-          .read(ForcastsNext36HoursProvider(TaiwanCity.taipei).future)
-          .then((v) => v.length),
-      completion(isNonZero),
-    );
+    final r = await container
+        .readWithoutDisposed(
+          ForcastsNext36HoursProvider([TaiwanCity.taipei]).future,
+        )
+        .then((v) => v.length);
+    expectLater(r, completion(isNonZero));
   });
 }
