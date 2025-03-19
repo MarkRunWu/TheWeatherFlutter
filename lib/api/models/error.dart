@@ -11,7 +11,7 @@ class APIError extends AppError {
   factory APIError.from(DioException exception) {
     return APIError(
       statusCode: exception.response?.statusCode ?? 0,
-      message: exception.message ?? exception.toString(),
+      message: exception.response?.statusMessage,
     );
   }
 
@@ -22,3 +22,16 @@ class APIError extends AppError {
 }
 
 class UnknownError extends AppError {}
+
+extension LocalizedMessage on AppError {
+  String get localizedMessage {
+    return switch (this) {
+      APIError(:final statusCode, :final message) =>
+        message ??
+            (statusCode > 400 && statusCode < 500
+                ? "Permission Error"
+                : "Server Error"),
+      UnknownError() => "unknown error happened",
+    };
+  }
+}

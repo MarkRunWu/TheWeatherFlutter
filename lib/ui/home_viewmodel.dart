@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:the_weather_flutter/api/models/city.dart';
@@ -41,6 +42,10 @@ class HomeViewModel extends _$HomeViewModel {
     ref.read(searchTextProvider.notifier).state = text.trim();
   }
 
+  void refresh() {
+    ref.invalidate(forcastsNext36HoursProvider);
+  }
+
   @override
   HomeState build() {
     final q = ref.watch(searchTextProvider);
@@ -48,7 +53,11 @@ class HomeViewModel extends _$HomeViewModel {
     final r = ref.watch(forcastsNext36HoursProvider(cities));
     return r.map(
       data: (d) => HomeReadyState(q, d.value),
-      error: (e) => HomeErrorState(e.error as AppError),
+      error:
+          (e) =>
+              e.isLoading
+                  ? HomeLoadingState()
+                  : HomeErrorState(e.error as AppError),
       loading: (l) => HomeLoadingState(),
     );
   }

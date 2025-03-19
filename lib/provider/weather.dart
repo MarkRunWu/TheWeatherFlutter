@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:the_weather_flutter/api/models/city.dart';
@@ -14,7 +13,6 @@ Future<List<CityForcast>> forcastsNext36Hours(
   Ref ref,
   List<TaiwanCity> cities,
 ) async {
-  debugPrint("request $cities");
   if (cities.isEmpty) {
     return List.empty();
   }
