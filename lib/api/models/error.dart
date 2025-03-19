@@ -26,12 +26,11 @@ class UnknownError extends AppError {}
 extension LocalizedMessage on AppError {
   String get localizedMessage {
     return switch (this) {
-      APIError(:final statusCode, :final message) =>
-        message ??
-            (statusCode > 400 && statusCode < 500
-                ? "Permission Error"
-                : "Server Error"),
-      UnknownError() => "unknown error happened",
+      APIError(:final statusCode) =>
+        (statusCode > 400 && statusCode < 500
+            ? "權限錯誤($statusCode)，請檢查您的API KEY是否正確"
+            : "伺服器錯誤"),
+      UnknownError() => "無法辨識的錯誤",
     };
   }
 }

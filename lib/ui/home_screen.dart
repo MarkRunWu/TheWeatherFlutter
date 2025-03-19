@@ -41,8 +41,8 @@ class HomeScreen extends ConsumerWidget {
                       : Center(
                         child: Text(
                           state.query.isNotEmpty
-                              ? "No query result for `${state.query}`"
-                              : "Type search bar to query weather",
+                              ? "無法找到與 `${state.query}` 有關的天氣預報, 請重新搜索。"
+                              : "鍵入搜尋欄開始搜尋台灣各城市天氣預報",
                         ),
                       ),
                 HomeErrorState(:final error) => Center(
