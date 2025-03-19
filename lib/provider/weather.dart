@@ -29,6 +29,7 @@ Future<List<CityForcast>> forcastsNext36Hours(
         );
       }
     }
+    final now = DateTime.now();
     return CityForcast(
       city: TaiwanCity.values.firstWhere(
         (v) => v.name == location.locationName,
@@ -41,25 +42,34 @@ Future<List<CityForcast>> forcastsNext36Hours(
                 final hourlyRecords = List<ForcastRecord>.empty(growable: true);
 
                 while (start.isBefore(end)) {
-                  hourlyRecords.add(
-                    ForcastRecord(
-                      start: start,
-                      end: start = start.add(Duration(hours: 1)),
-                      minTemperature: Temperature(
-                        value: property["MinT"]!.parameter.parameterName,
-                        unit: property["MinT"]!.parameter.parameterUnit ?? "C",
+                  final nextStart = start.add(Duration(hours: 1));
+                  if (nextStart.isAfter(now)) {
+                    hourlyRecords.add(
+                      ForcastRecord(
+                        start: start,
+                        end: nextStart,
+                        minTemperature: Temperature(
+                          value: property["MinT"]!.parameter.parameterName,
+                          unit:
+                              property["MinT"]!.parameter.parameterUnit ?? "C",
+                        ),
+                        maxTemperature: Temperature(
+                          value: property["MaxT"]!.parameter.parameterName,
+                          unit:
+                              property["MaxT"]!.parameter.parameterUnit ?? "C",
+                        ),
+                        rainChance:
+                            int.parse(
+                              property["PoP"]!.parameter.parameterName,
+                            ) /
+                            100.0,
+                        weatherTerm: property["Wx"]!.parameter.parameterName,
+                        confortableTerm:
+                            property["CI"]!.parameter.parameterName,
                       ),
-                      maxTemperature: Temperature(
-                        value: property["MaxT"]!.parameter.parameterName,
-                        unit: property["MaxT"]!.parameter.parameterUnit ?? "C",
-                      ),
-                      rainChance:
-                          int.parse(property["PoP"]!.parameter.parameterName) /
-                          100.0,
-                      weatherTerm: property["Wx"]!.parameter.parameterName,
-                      confortableTerm: property["CI"]!.parameter.parameterName,
-                    ),
-                  );
+                    );
+                  }
+                  start = nextStart;
                 }
 
                 return hourlyRecords;
