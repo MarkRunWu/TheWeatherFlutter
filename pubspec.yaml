@@ -41,6 +41,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   injectable: ^2.5.0
   get_it: ^8.0.3
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_weather_flutter/provider/models/forcast.dart';
 import 'package:the_weather_flutter/provider/utils/localized.dart';
+import 'package:the_weather_flutter/ui/components/weather_icon.dart';
 
 class WeatherForcastsCard extends StatelessWidget {
   final CityForcast forcast;
@@ -17,7 +18,7 @@ class WeatherForcastsCard extends StatelessWidget {
             Text("天氣預測(未來36小時) - ${forcast.city.name}"),
             SizedBox(height: 16),
             SizedBox(
-              height: 120,
+              height: 140,
               child: ListView.separated(
                 separatorBuilder: (_, __) => SizedBox(width: 12),
                 scrollDirection: Axis.horizontal,
@@ -74,6 +75,10 @@ class _ForcastSlot extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        WeatherIcon(
+          forcast.weatherTerm,
+          isNightIcon: forcast.start.hour > 18 || forcast.start.hour < 6,
         ),
         if (isNow) Text("現在") else Text(forcast.start.localizedHour),
         Text(forcast.confortableTerm),
