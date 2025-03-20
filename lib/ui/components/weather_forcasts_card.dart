@@ -18,7 +18,7 @@ class WeatherForcastsCard extends StatelessWidget {
             Text("天氣預測(未來36小時) - ${forcast.city.name}"),
             SizedBox(height: 16),
             SizedBox(
-              height: 140,
+              height: 160,
               child: ListView.separated(
                 separatorBuilder: (_, __) => SizedBox(width: 12),
                 scrollDirection: Axis.horizontal,
@@ -52,6 +52,8 @@ class _ForcastSlot extends StatelessWidget {
             : Theme.of(context).textTheme.labelSmall;
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           padding: EdgeInsets.all(8),
@@ -81,6 +83,11 @@ class _ForcastSlot extends StatelessWidget {
           isNightIcon: forcast.start.hour > 18 || forcast.start.hour < 6,
         ),
         if (isNow) Text("現在") else Text(forcast.start.localizedHour),
+        if ((forcast.rainChance ?? 0) > 0)
+          Text(
+            "${(forcast.rainChance! * 100).floor()}%",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
         Text(forcast.confortableTerm),
       ],
     );
