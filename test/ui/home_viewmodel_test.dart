@@ -3,8 +3,6 @@ import 'package:the_weather_flutter/api/models/city.dart';
 import 'package:the_weather_flutter/api/models/error.dart';
 import 'package:the_weather_flutter/api/models/forcasts.dart';
 import 'package:the_weather_flutter/api/weather.dart';
-import 'package:the_weather_flutter/injectable.dart';
-import 'package:the_weather_flutter/provider/models/forcast.dart';
 import 'package:the_weather_flutter/provider/models/forcast_ext.dart';
 import 'package:the_weather_flutter/ui/home_viewmodel.dart';
 
@@ -46,13 +44,32 @@ void main() {
     });
     test("Should show city weather result", () async {
       final container = createContainer();
-      final q = TaiwanCity.taipei.name;
+      final city = TaiwanCity.taipei;
+      final q = city.name;
       container.read(homeViewModelProvider.notifier).searchByText(q);
       await container.expectProviderState(
         homeViewModelProvider,
         HomeReadyState(
           q,
-          mockForcastsResponse.records.locations
+          createMockForcastsResponse([city]).records.locations
+              .map(
+                (l) => CityForcastMapper.from(l, dateTimeAfter: DateTime.now()),
+              )
+              .toList(),
+        ),
+      );
+    });
+
+    test("Should show multiple city weather results", () async {
+      final container = createContainer();
+      final cities = [TaiwanCity.taipei, TaiwanCity.yilan];
+      final q = cities.map((city) => city.name).join(" ");
+      container.read(homeViewModelProvider.notifier).searchByText(q);
+      await container.expectProviderState(
+        homeViewModelProvider,
+        HomeReadyState(
+          q,
+          createMockForcastsResponse(cities).records.locations
               .map(
                 (l) => CityForcastMapper.from(l, dateTimeAfter: DateTime.now()),
               )

@@ -20,7 +20,7 @@ class MockWeatherAPI implements WeatherAPI {
   ) {
     return _interceptor?.getForcasts36Hours(cities) ??
         CancellableFuture<ForcastsResponse>(
-          () async => Future.value(mockForcastsResponse),
+          () async => Future.value(createMockForcastsResponse(cities)),
           () {},
         );
   }

@@ -57,9 +57,15 @@ final searchTextProvider = StateProvider<String>((Ref ref) {
 
 @riverpod
 List<TaiwanCity> cityFilters(Ref ref, String q) {
-  q = q.trim().replaceAll("台", "臺");
-  return TaiwanCity.values
-      .where((city) => q.isNotEmpty && city.name.startsWith(q))
+  final queries = q.trim().replaceAll("台", "臺").split(" ");
+  return queries
+      .map(
+        (q) => TaiwanCity.values.where(
+          (city) => q.isNotEmpty && city.name.startsWith(q),
+        ),
+      )
+      .expand((e) => e)
+      .toSet()
       .toList();
 }
 
