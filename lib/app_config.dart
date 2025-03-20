@@ -1,18 +1,26 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 
-@dev
-@prod
-@injectable
-class AppConfig {
+abstract class AppConfig {
+  String get weatherApiKey;
+  int get debounceMilliSec;
+}
+
+@Injectable(as: AppConfig)
+class AppConfigImpl extends AppConfig {
+  @override
   final String weatherApiKey;
+  @override
   final int debounceMilliSec;
 
-  const AppConfig({required this.weatherApiKey, this.debounceMilliSec = 500});
+  AppConfigImpl({
+    required this.weatherApiKey,
+    this.debounceMilliSec = 500,
+  });
 
   @FactoryMethod(preResolve: true)
   static Future<AppConfig> create() async {
     await dotenv.load(fileName: ".env");
-    return AppConfig(weatherApiKey: dotenv.env["WEATHER_API_KEY"] ?? '');
+    return AppConfigImpl(weatherApiKey: dotenv.env["WEATHER_API_KEY"] ?? '');
   }
 }

@@ -15,9 +15,6 @@ import 'package:the_weather_flutter/api/weather.dart' as _i143;
 import 'package:the_weather_flutter/api/weather_dio.dart' as _i813;
 import 'package:the_weather_flutter/app_config.dart' as _i902;
 
-const String _dev = 'dev';
-const String _prod = 'prod';
-
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
   Future<_i174.GetIt> init({
@@ -26,13 +23,11 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     await gh.factoryAsync<_i902.AppConfig>(
-      () => _i902.AppConfig.create(),
-      registerFor: {_dev, _prod},
+      () => _i902.AppConfigImpl.create(),
       preResolve: true,
     );
     gh.singleton<_i143.WeatherAPI>(
       () => _i813.WeatherDio(gh<_i902.AppConfig>()),
-      registerFor: {_dev, _prod},
     );
     return this;
   }

@@ -8,12 +8,11 @@ import 'injectable.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit(
-  generateForDir: ["lib", "test"],
+  generateForDir: ["test"],
   initializerName: "initTest",
   preferRelativeImports: true,
 )
-Future<void> configureTestDependencies() =>
-    getIt.initTest(environment: Environment.test);
+void configureTestDependencies() => getIt.initTest();
 
 mockAPI(MockWeatherAPI api) {
   (getIt<WeatherAPI>() as MockWeatherAPI).setInterceptor(api);

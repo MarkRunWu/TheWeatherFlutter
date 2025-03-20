@@ -5,7 +5,6 @@ import 'package:the_weather_flutter/api/weather.dart';
 
 import 'data.dart';
 
-@test
 @Singleton(as: WeatherAPI)
 class MockWeatherAPI implements WeatherAPI {
   MockWeatherAPI? _interceptor;
