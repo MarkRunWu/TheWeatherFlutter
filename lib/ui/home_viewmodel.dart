@@ -1,15 +1,18 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:the_weather_flutter/api/models/city.dart';
 import 'package:the_weather_flutter/api/models/error.dart';
+import 'package:the_weather_flutter/app_config.dart';
+import 'package:the_weather_flutter/injectable.dart';
 import 'package:the_weather_flutter/provider/models/forcast.dart';
 import 'package:the_weather_flutter/provider/weather.dart';
 
 part 'home_viewmodel.g.dart';
 
-sealed class HomeState {
-  String query;
-  HomeState(this.query);
+sealed class HomeState extends Equatable {
+  final String query;
+  const HomeState(this.query);
 
   HomeState copyWith(String? query) {
     return switch (this) {
@@ -24,21 +27,28 @@ sealed class HomeState {
       ),
     };
   }
+
+  @override
+  List<Object?> get props => [query];
 }
 
 class HomeReadyState extends HomeState {
-  List<CityForcast> forcasts;
+  final List<CityForcast> forcasts;
 
-  HomeReadyState(super.query, this.forcasts);
+  const HomeReadyState(super.query, this.forcasts);
+  @override
+  List<Object?> get props => [...super.props, forcasts];
 }
 
 class HomeLoadingState extends HomeState {
-  HomeLoadingState(super.query);
+  const HomeLoadingState(super.query);
 }
 
 class HomeErrorState extends HomeState {
   final AppError error;
-  HomeErrorState(this.error, super.query);
+  const HomeErrorState(this.error, super.query);
+  @override
+  List<Object?> get props => [...super.props, error];
 }
 
 final searchTextProvider = StateProvider<String>((Ref ref) {
@@ -63,7 +73,9 @@ Future<List<CityForcast>> debouncedSearchForcast(
   }
   var isDisposed = false;
   ref.onDispose(() => isDisposed = true);
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(
+    Duration(milliseconds: getIt<AppConfig>().debounceMilliSec),
+  );
   if (isDisposed) {
     throw Exception("canceled");
   }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 
-sealed class AppError {}
+sealed class AppError extends Equatable {}
 
 class APIError extends AppError {
   final int statusCode;
@@ -19,9 +20,15 @@ class APIError extends AppError {
   String toString() {
     return "[$statusCode]API Error($message)";
   }
+
+  @override
+  List<Object?> get props => [statusCode, message];
 }
 
-class UnknownError extends AppError {}
+class UnknownError extends AppError {
+  @override
+  List<Object?> get props => [];
+}
 
 extension LocalizedMessage on AppError {
   String get localizedMessage {

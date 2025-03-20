@@ -27,4 +27,22 @@ extension ProviderContainerTestSuit on ProviderContainer {
     listen(provider, (_, __) {});
     return read(provider);
   }
+
+  expectProviderState<State>(ProviderListenable<State> provider, State state) async {
+    State? s;
+    final matcher = equals(state);
+    int count = 3;
+    bool isMatched = false;
+    listen(provider, (_, _) {});
+    while (!isMatched && count > 0) {
+      s = read(provider);
+      isMatched = matcher.matches(s, {});
+      if (isMatched) {
+        return;
+      }
+      await Future.delayed(Duration(microseconds: 50));
+      count--;
+    }
+    fail("Actual state is $s not $state");
+  }
 }

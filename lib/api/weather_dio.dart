@@ -27,6 +27,8 @@ class DioLogger extends Interceptor {
   }
 }
 
+@dev
+@prod
 @Singleton(as: WeatherAPI)
 class WeatherDio implements WeatherAPI {
   late Dio _dio;

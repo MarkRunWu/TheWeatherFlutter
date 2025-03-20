@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:the_weather_flutter/api/models/city.dart';
 
-class Temperature {
+class Temperature extends Equatable {
   final String value;
   final String unit;
 
@@ -10,9 +11,12 @@ class Temperature {
   String toString() {
     return "$value$unit";
   }
+
+  @override
+  List<Object?> get props => [value, unit];
 }
 
-class ForcastRecord {
+class ForcastRecord extends Equatable {
   final String weatherTerm;
   final Temperature maxTemperature;
   final Temperature minTemperature;
@@ -21,7 +25,7 @@ class ForcastRecord {
   final DateTime end;
   final String confortableTerm;
 
-  ForcastRecord({
+  const ForcastRecord({
     required this.start,
     required this.end,
     required this.weatherTerm,
@@ -30,11 +34,24 @@ class ForcastRecord {
     required this.rainChance,
     required this.confortableTerm,
   });
+  @override
+  List<Object?> get props => [
+    weatherTerm,
+    maxTemperature,
+    minTemperature,
+    rainChance,
+    start,
+    end,
+    confortableTerm,
+  ];
 }
 
-class CityForcast {
+class CityForcast extends Equatable {
   final TaiwanCity city;
   final List<ForcastRecord> records;
 
-  CityForcast({required this.city, required this.records});
+  const CityForcast({required this.city, required this.records});
+
+  @override
+  List<Object?> get props => [city, records];
 }
